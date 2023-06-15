@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        #box {
+            border: 1px solid black;
+            display: grid;
+            grid-template-columns: 30% 65%;
+            column-gap: 5%;
+        }
+
+        #box>div {
+            border: 1px solid teal;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome to chat</h1>
+
+    <div id="box">
+        <!--  left box for online users -->
+        <div class="online">
+            <p id="room"></p>
+            <p class="online-users">Online Users</p>
+            <div class="users">
+                <!-- Append all online users -->
+            </div>
+        </div>
+
+        <!--  right box -->
+        <div>
+            <button id="leave">Leave</button>
+            <!--  message div -->
+            <div id="messageContainer"></div>
+
+            <!-- div for messages fields -->
+            <div class="fields">
+                <input type="text" id="message" placeholder="Enter message" />
+                <button id="send">Send</button>
+            </div>
+        </div>
+
+
+    </div>
+
+</body>
+<script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+    integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+    crossorigin="anonymous"></script>
+
+<script src="./chat.js"></script>
+
+</html>
