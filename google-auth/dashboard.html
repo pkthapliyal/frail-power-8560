@@ -10,7 +10,30 @@
 
 <body>
     <h1>Dashboard</h1>
+    <form action="">
+        <input type="number" placeholder="enter otp">
+<input type="submit">
+    </form>
 
 </body>
+<script>
+
+    let  form = document.querySelector('form')
+    form.addEventListener('submit',(e)=>{
+        e.preventDefault()
+        let otp = Number(form[0].value)
+        console.lgo(otp)
+        fetch('http://localhost:8080/otpverify',{
+            method: "POST",
+            body : JSON.stringify({otp : otp}),
+            mode : 'cors'
+        }).then((data) => {
+            return data.json()
+        })
+        .then((data) =>{
+            console.log(data)
+        }).catch(err => console.log(err))
+    })
+</script>
 
 </html>

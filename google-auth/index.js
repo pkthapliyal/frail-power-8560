@@ -4,13 +4,13 @@ const jwt = require("jsonwebtoken")
 const app = express();
 var session = require('express-session')
 const passport = require("passport");
-
+const cors = require('cors')
 const GitHubStrategy = require('passport-github2').Strategy;
 const { v4: uuidv4 } = require('uuid');
 var cookieParser = require('cookie-parser')
 require('dotenv').config();
 const secretKey = process.env.secretKey
-
+app.use(cors())
 app.use(cookieParser())
 app.use(express.json())
 app.use(session({ secret: "cats" }));
@@ -40,7 +40,7 @@ app.get("/auth/google",
 
 app.get("/auth/google/callback",
     passport.authenticate("google", {
-        // successRedirect: "/protected",
+        // successRedirect: "/dashboard",
         failureRedirect: "/auth/failure",
         // session: false
     }),
@@ -49,18 +49,38 @@ app.get("/auth/google/callback",
         let password = uuidv4()
         isUser = await UserModel.findOne({ email })
         if (isUser) {
-            return res.status(404).send({ "err ": "User is already registered" })
+            // user = UserModel({ email, name, password })
+            // await user.save()
+            const accessToken = jwt.sign({ email, userID: isUser._id }, secretKey, { expiresIn: "2m" })
+            res.cookie("access_token", googleAccessToken)
+            res.sendFile(__dirname + "/dashboard.html")
+            // return res.status(200).send({ message : "Login Successfull", accessToken : accessToken })
+           
         }
         user = UserModel({ email, name, password })
         await user.save()
         const accessToken = jwt.sign({ email, userID: user._id }, secretKey, { expiresIn: "2m" })
         res.cookie("access_token", googleAccessToken)
-        res.status(200).send({ "message ": "User has been registered" })
+        res.sendFile(__dirname + "/dashboard.html")
+        // res.status(200).send({ message : "Login Successfull", accessToken : accessToken })
     }
 )
 
-app.get("/auth/failure", (req, res) => {
-    res.send("Something Went wrong")
+
+app.post('/otpverify', async(req, res)=>{
+    let access_token = req.cookies
+    console.log(access_token)
+    const {otp} =  req.body
+    console.log(otp)
+    let OTP = await client.get()
+    if(otp == OTP && OTP) {
+        const user = await UserModel.findOne(email)
+        const token = jwt.sign({email : user})
+        return res.send({status : true})
+    }
+    else{
+        return res.status(404).send({status : false})
+    }
 })
 
 app.get("/valid", async (req, res) => {
@@ -123,6 +143,10 @@ app.get("/", isAuth, async (req, res) => {
     res.sendFile(__dirname + "/dashboard.html")
 })
 
+app.get("/dashboard", isAuth, async (req, res) => {
+    res.sendFile(__dirname + "/dashboard.html")
+})
+
 app.get("/login", async (req, res) => {
     if (req.user) {
         return res.redirect("/")
@@ -139,48 +163,6 @@ passport.deserializeUser(function (id, cb) {
 })
 
 
-passport.use(
-    new GitHubStrategy(
-        {
-            clientID: '34c4e96744ede08a2254',
-            clientSecret: "70c2386cf9d163bd51ec64761fa8fa29849980af",
-            callbackURL: "http://localhost:8080/auth/github/callback",
-            scope: ['user:email']
-        },
-        function (githubAccessToken, refreshToken, profile, cb) {
-            // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-            //     return done(err, user);
-            // });
-            return cb(null, { githubAccessToken, name: profile.displayName, email: profile.emails[0].value })
-        }
-    ));
-
-//  Authentiate Request
-app.get('/auth/github',
-    passport.authenticate('github'));
-
-app.get('/auth/github/callback',
-    // Successful authentication, redirect home.
-    passport.authenticate("github", {
-        // successRedirect: "/protected",
-        failureRedirect: "/auth/failure",
-        // session: false
-    }),
-    async function (req, res) {
-        const { email, name, githubAccessToken } = req.user
-        let password = uuidv4()
-        isUser = await UserModel.findOne({ email })
-        if (isUser) {
-            return res.status(404).send({ "err ": "User is already registered" })
-        }
-        user = UserModel({ email, name, password })
-        await user.save()
-        const accessToken = jwt.sign({ email, userID: user._id }, secretKey, { expiresIn: "2m" })
-        res.cookie("access_token", githubAccessToken)
-        res.status(200).send({ "message ": "User has been registered" })
-    }
-
-);
 app.get("/auth/failure", (req, res) => {
     res.status(404).send({ "err": "Something went wrong !" })
 })
