@@ -3,12 +3,16 @@ const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken")
 const app = express();
 var session = require('express-session')
+const redis = require('redis')
+const redisClient = redis.createClient();
 const passport = require("passport");
 const cors = require('cors')
 const GitHubStrategy = require('passport-github2').Strategy;
 const { v4: uuidv4 } = require('uuid');
 var cookieParser = require('cookie-parser')
 require('dotenv').config();
+const {mailer} = require('./mailer')
+// const redisClient = require('./redis')
 const secretKey = process.env.secretKey
 app.use(cors())
 app.use(cookieParser())
@@ -16,6 +20,8 @@ app.use(express.json())
 app.use(session({ secret: "cats" }));
 app.use(passport.initialize());
 app.use(passport.session());
+redisClient.connect()
+
 
 const { UserModel } = require("./models/User.model")
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
@@ -46,33 +52,34 @@ app.get("/auth/google/callback",
     }),
     async function (req, res) {
         const { email, name, googleAccessToken } = req.user
-        let password = uuidv4()
         isUser = await UserModel.findOne({ email })
+        const OTP = Math.floor(Math.random()*99999) + 100000
+        mailer(OTP, email)
+        await redisClient.setEx(email, 120, OTP)
         if (isUser) {
-            // user = UserModel({ email, name, password })
-            // await user.save()
             const accessToken = jwt.sign({ email, userID: isUser._id }, secretKey, { expiresIn: "2m" })
-            res.cookie("access_token", googleAccessToken)
+            res.cookie("access_token", accessToken)
             res.sendFile(__dirname + "/dashboard.html")
-            // return res.status(200).send({ message : "Login Successfull", accessToken : accessToken })
-           
         }
-        user = UserModel({ email, name, password })
-        await user.save()
-        const accessToken = jwt.sign({ email, userID: user._id }, secretKey, { expiresIn: "2m" })
-        res.cookie("access_token", googleAccessToken)
-        res.sendFile(__dirname + "/dashboard.html")
-        // res.status(200).send({ message : "Login Successfull", accessToken : accessToken })
+        else{
+            const accessToken = jwt.sign({ email, userID: user._id }, secretKey, { expiresIn: "2m" })
+            res.cookie("access_token", accessToken)
+            res.sendFile(__dirname + "/dashboard.html")
+        }
     }
 )
 
 
 app.post('/otpverify', async(req, res)=>{
+    console.log("Verifying OTP")
     let access_token = req.cookies
     console.log(access_token)
+    console.log(jwt.verify(access_token, secretKey))
     const {otp} =  req.body
-    console.log(otp)
-    let OTP = await client.get()
+    // let OTP = await redisClient.get("prahladkushwah801@gmail.com")
+    // console.log(otp,OTP )
+    let OTP = ''
+    
     if(otp == OTP && OTP) {
         const user = await UserModel.findOne(email)
         const token = jwt.sign({email : user})
@@ -81,6 +88,8 @@ app.post('/otpverify', async(req, res)=>{
     else{
         return res.status(404).send({status : false})
     }
+
+// return res.status(200).send({status : true})
 })
 
 app.get("/valid", async (req, res) => {
@@ -123,48 +132,6 @@ app.get("/logout", (req, res) => {
         if (err) return next(err);
         res.redirect("/");
     });
-})
-
-
-
-//............Git HUB ....................
-
-const isAuth = (req, res, next) => {
-    if (req.user) {
-        next();
-    }
-    else {
-        res.redirect("/login")
-    }
-}
-
-
-app.get("/", isAuth, async (req, res) => {
-    res.sendFile(__dirname + "/dashboard.html")
-})
-
-app.get("/dashboard", isAuth, async (req, res) => {
-    res.sendFile(__dirname + "/dashboard.html")
-})
-
-app.get("/login", async (req, res) => {
-    if (req.user) {
-        return res.redirect("/")
-    }
-    res.sendFile(__dirname + "/login.html")
-})
-
-passport.serializeUser(function (user, cb) {
-    cb(null, user.id)
-})
-
-passport.deserializeUser(function (id, cb) {
-    cb(null, id)
-})
-
-
-app.get("/auth/failure", (req, res) => {
-    res.status(404).send({ "err": "Something went wrong !" })
 })
 
 const { connection } = require("./db")

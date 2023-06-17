@@ -41,14 +41,15 @@
             <input type="submit" placeholder="submit"> <br>
             <p>Don't have an account.</p>
             <a href="./signup.html"> Click Here !</a> <br>
-            <a href="http://localhost:8080/auth/github" style="font-size:16px"> Log IN with github</a>
-            <p></p><br> <br>
-            <br> <a href="http://localhost:8080/auth/google" style="font-size:16px"> Continue with google </a>
+            
+            <br> <button id="google" style="font-size:16px"><a href="http://localhost:8080/auth/google">Continue with google</a>  </button>
 
         </form>
         <button id="Button">Hit profile api</button>
     </div>
-
+<script>
+    let btn = document.querySelector('#google')
+</script>
 </body>
 
 </html>

@@ -10,8 +10,7 @@ passport.use(new GoogleStrategy({
 },
     function (googleAccessToken, refreshToken, profile, cb) {
         // return cb(null, profile);
-        console.log(profile)
-
+        // console.log(profile)
         return cb(null, { googleAccessToken, name: profile.displayName, email: profile.emails[0].value })
     }
 ));

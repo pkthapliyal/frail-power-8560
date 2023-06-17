@@ -1,22 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <title>Light Theme OTP Page</title>
+  <style>
+    body {
+      background-color: #f4f4f4;
+      color: #333;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      max-width: 400px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .container label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .container input[type="text"] {
+      width: 90%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+    }
+
+    .container button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background-color: #555;
+      color: #fff;
+      font-size: 16px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .container button:hover {
+      background-color: #777;
+    }
+  </style>
 </head>
-
 <body>
-    <h1>Dashboard</h1>
-    <form action="">
-        <input type="number" placeholder="enter otp">
-<input type="submit">
-    </form>
+  <div class="container">
+    <label for="otp">Enter OTP:</label>
+    <input type="text" id="otp" maxlength="6" placeholder="Enter your otp ">
+    <button onclick="fetchData()">Submit</button>
+  </div>
 
+  <script>
+    function fetchData() {
+      const otpInput = document.getElementById('otp');
+      const otp = otpInput.value;
+
+      fetch('http://localhost:8080/otpverify', {
+        method: 'POST',
+        body: JSON.stringify({ otp: otp }),
+        headers: {
+          'Content-Type': 'application/json'
+        }, 
+        mode: "cors"
+      })
+        .then(response => response.json())
+        .then(data => {
+          alert(data.status);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again later.');
+        });
+    }
+  </script>
 </body>
-<script>
+</html>
+
+<!-- <script>
 
     let  form = document.querySelector('form')
     form.addEventListener('submit',(e)=>{
@@ -36,4 +108,4 @@
     })
 </script>
 
-</html>
+</html> -->
