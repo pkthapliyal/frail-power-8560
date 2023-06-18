@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        /*   style */
+        @font-face {
+            font-family: "CastoroTitling";
+            src: url("https://s3.us-east-2.amazonaws.com/cdn.spotlessplace.com/wp-content/CastoroTitling-Regular.ttf") format("truetype");
+        }
+
+        @font-face {
+            font-family: BraahOne;
+            src: url("https://s3.us-east-2.amazonaws.com/cdn.spotlessplace.com/wp-content/Merriweather-Regular.ttf");
+        }
+
+        body {
+            margin: 0;
+            font-family: "CastoroTitling";
+            font-size: 12px;
+        }
+
+        @keyframes zoom {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        #backgroundimg {
+            object-fit: cover;
+            object-position: center center;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            z-index: -1;
+            animation: zoom 20s infinite alternate;
+        }
+
+        .main {
+            background-color: rgba(255, 255, 255, 0.04);
+            aspect-ratio: 13/16;
+            width: 400px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 30px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            transition: transform 1s ease, width 1s ease;
+        }
+
+        .main:hover {
+            width: 410px;
+        }
+
+        .header {
+            color: #fff;
+            display: flex;
+            padding: 20px;
+            align-items: center;
+        }
+
+        #pfpname {
+            transition: letter-spacing 0.3s ease;
+        }
+
+        #pfpname:hover {
+            letter-spacing: 2px;
+        }
+
+        .notifications {
+            background: #2796db;
+            border-radius: 100%;
+            aspect-ratio: 1;
+            width: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 5px;
+            cursor: pointer;
+            transition: transform 2s ease;
+        }
+
+        .notifications:hover {
+            transition: transform 2s ease;
+        }
+
+        .header .pfp {
+            aspect-ratio: 1;
+            width: 40px;
+            border-radius: 100%;
+            cursor: pointer;
+            transition: transform 1s ease;
+        }
+
+        .pfp:hover {
+            transform: scale(1.2);
+        }
+
+        .header .center {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        .header .center div p {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .footer {
+            width: 100%;
+            height: 100px;
+            position: fixed;
+            bottom: 0;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .text-box {
+            float: right;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: none;
+            padding: 8px 10px;
+            width: 65%;
+            outline: none;
+            color: #fff;
+            transition: transform 1s ease, width 1s ease;
+        }
+
+        .text-box:hover {
+            width: 75%;
+        }
+
+        .send-ico {
+            color: #fff;
+            position: absolute;
+            right: 0;
+            background: #2796db;
+            border-radius: 100%;
+            margin-right: 15px;
+            margin-top: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 13px;
+            cursor: pointer;
+        }
+
+        .text-box::placeholder {
+            color: #c6c6c6;
+            font-family: BraahOne;
+        }
+
+        .content {
+            width: 100%;
+            bottom: 100px;
+            position: absolute;
+            height: 300px;
+            text-align: center;
+            color: #afafaf;
+            overflow: auto;
+        }
+
+        .msg-btn {
+            color: #fff;
+            word-wrap: break-word;
+            border-radius: 100px;
+            display: block;
+            max-width: 100%;
+            font-size: 14px;
+            font-family: "BraahOne";
+        }
+
+        .msg-btn p {
+            padding: 10px 15px;
+            margin: 0;
+        }
+
+        .msg-btn-holder {
+            padding-bottom: 30px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .receiver-msg {
+            background: #4c4c4c;
+            display: block;
+            float: left;
+
+        }
+
+        .sender-msg {
+            background: #2798fc;
+            float: right;
+        }
+
+        @keyframes rotate {
+            from {
+                rotate: 0deg;
+            }
+
+            50% {
+                scale: 1 1.5;
+            }
+
+            to {
+                rotate: 360deg;
+            }
+        }
+
+        .main {
+            background-color: black;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px, rgb(51, 51, 51) 0px 0px 0px 3px;
+        }
+
+        .msg-btn-holder>div {
+            margin-bottom: 15px;
+            /* display: block; */
+        }
+
+        #recieveBox div {
+            border: 1px solid red;
+            /* display: block; */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome to chat</h1>
+
+
+    <!--   chat app  -->
+
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.2.1/css/all.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- <img id="backgroundimg" src="https://cdn.pixabay.com/photo/2016/11/29/04/42/conifers-1867371_960_720.jpg"> -->
+    <div class="main">
+        <div class="header">
+            <i style="cursor:pointer;display:flex;float:right;" class="fas fa-arrow-left"></i>
+            <div class="notifications"><b>3</b></div>
+            <div class="center">
+                <div>
+                    <img class="pfp" src="https://cdn.pixabay.com/photo/2014/11/30/14/11/cat-551554_960_720.jpg">
+                    <p id="pfpname">Chatting</p>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="content">
+            <div style="padding:11px;">
+                <p>Thur, May 26, 10:41 AM</p>
+
+                <div class="msg-btn-holder" id="recieveBox">
+
+
+                </div>
+                <!-- <div class="msg-btn-holder" id="senderBox">
+                    <div class="sender-msg msg-btn">
+                        <p>James 4:17</p>
+                    </div>
+                </div> -->
+
+            </div>
+
+        </div>
+        <div class="footer">
+            <div style="width:100%;padding:11px;">
+                <input placeholder="Message" class="text-box" name="message" id="message">
+                <div class="send-ico" id="sendBtn">
+                    <i style="position:absolute;" class="fas fa-paper-plane"></i>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+<script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
+    integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+    crossorigin="anonymous"></script>
+
+<script src="./chat.js"></script>
+
+</html>

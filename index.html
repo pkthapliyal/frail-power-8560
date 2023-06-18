@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-image: url("./image/background.jpg");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+    }
+
+    .navbar img {
+      height: 50px;
+    }
+
+    .navbar button {
+      padding: 10px 20px;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .navbar button:hover {
+      background-color: #45a049;
+    }
+
+    .main-content {
+      display: flex;
+      height: calc(100vh - 80px);
+      align-items: center;
+      justify-content: center;
+      /* background-color: #f5f5f5; */
+      background-image: url("./image/background.jpg");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .main-content-left {
+      text-align: center;
+    }
+
+    .main-content h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .main-content button {
+      padding: 15px 40px;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 10px;
+      width: 400px;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+    }
+
+    .main-content button:hover {
+      background-color: #45a049;
+    }
+
+    .footer {
+      background-color: #fff;
+      padding: 20px;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      color: #333;
+      display: flex;
+      justify-content: space-evenly;
+    }
+
+    .footer p {
+      margin: 5px;
+    }
+
+    .footer input[type="email"] {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 250px;
+    }
+
+    .footer button {
+      padding: 10px 20px;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .footer button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <img src="./imgae/logo.jpg" alt="Tic Tac Toe Logo">
+    <div>
+      <button onclick="location.href='./frontend/frontend/login.html'">Login</button>
+      <button onclick="location.href='./frontend/frontend/login.html'">Signup</button>
+    </div>
+  </nav>
+
+  <div class="main-content" style="background-image: url('./imgae/background.jpg'); background-position: left; background-size: contain; background-repeat: no-repeat;">
+    <div class="main-content-left">
+      <h1>Welcome to Tic Tac Toe!</h1>
+      <a href="https://unit-backend.onrender.com/" target="_blank"><button>Play Game</button></a>
+      <a href="https://unit-backend.onrender.com/" target="_blank"><button>Play with Friends</button></a>
+      <a href="#"><button>Chat with Friends</button></a>
+      <br><br><br>
+      <p><h3>About the Game:</h3> Tic Tac Toe is a classic game played on a grid. <br> The goal is to get three of your marks in a row, either horizontally,<br> vertically, or diagonally, before your opponent does. It's a simple yet challenging game that <br> tests your strategy and critical thinking skills.</p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div>
+      <p>Tic Tac Toe Game</p>
+      <p>Key Features: Multiplayer Game, Chat with Friends</p>
+    </div>
+    <div>
+      <input type="email" placeholder="Enter your email">
+      <button onclick="location.href='./frontend/frontend/login.html'">Signup</button>
+    </div>
+  </footer>
+</body>
+
+</html>
