@@ -3,8 +3,6 @@ const mongoose = require('mongoose');
 const jwt = require("jsonwebtoken")
 const app = express();
 var session = require('express-session')
-const redis = require('redis')
-const redisClient = redis.createClient();
 const passport = require("passport");
 const cors = require('cors')
 const GitHubStrategy = require('passport-github2').Strategy;
@@ -12,7 +10,6 @@ const { v4: uuidv4 } = require('uuid');
 var cookieParser = require('cookie-parser')
 require('dotenv').config();
 const {mailer} = require('./mailer')
-// const redisClient = require('./redis')
 const secretKey = process.env.secretKey
 app.use(cors())
 app.use(cookieParser())
@@ -20,7 +17,14 @@ app.use(express.json())
 app.use(session({ secret: "cats" }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+// creating reis client 
+const redis = require('redis')
+const redisClient = redis.createClient();
 redisClient.connect()
+redisClient.on('connect', async()=>{
+    console.log('connected to redis')
+})
 
 
 const { UserModel } = require("./models/User.model")
@@ -50,21 +54,21 @@ app.get("/auth/google/callback",
         failureRedirect: "/auth/failure",
         // session: false
     }),
-    async function (req, res) {
+    async(req, res)=> {
         const { email, name, googleAccessToken } = req.user
         isUser = await UserModel.findOne({ email })
         const OTP = Math.floor(Math.random()*99999) + 100000
-        mailer(OTP, email)
-        await redisClient.setEx(email, 120, OTP)
+        // mailer(OTP, email)
+        await redisClient.SETEX(`${email}`,120, `${OTP}`)
         if (isUser) {
             const accessToken = jwt.sign({ email, userID: isUser._id }, secretKey, { expiresIn: "2m" })
             res.cookie("access_token", accessToken)
-            res.sendFile(__dirname + "/dashboard.html")
+           return res.sendFile(__dirname + "/dashboard.html")
         }
         else{
             const accessToken = jwt.sign({ email, userID: user._id }, secretKey, { expiresIn: "2m" })
             res.cookie("access_token", accessToken)
-            res.sendFile(__dirname + "/dashboard.html")
+             return res.sendFile(__dirname + "/dashboard.html")
         }
     }
 )
@@ -74,11 +78,14 @@ app.post('/otpverify', async(req, res)=>{
     console.log("Verifying OTP")
     let access_token = req.cookies
     console.log(access_token)
-    console.log(jwt.verify(access_token, secretKey))
+    const decoded = jwt.verify(`${access_token}`, secretKey)
     const {otp} =  req.body
-    // let OTP = await redisClient.get("prahladkushwah801@gmail.com")
-    // console.log(otp,OTP )
-    let OTP = ''
+    let OTP = await redisClient.get("prahladkush231@gmail.com", (err, result)=>{
+        if (result) return result
+        else console.log(err)
+    })
+    
+    console.log(otp,OTP )
     
     if(otp == OTP && OTP) {
         const user = await UserModel.findOne(email)
@@ -134,7 +141,8 @@ app.get("/logout", (req, res) => {
     });
 })
 
-const { connection } = require("./db")
+const { connection } = require("./db");
+const { ReconnectStrategyError } = require("redis");
 app.listen(8080, async () => {
     try {
         await connection;
