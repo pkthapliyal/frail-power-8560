@@ -71,7 +71,7 @@ app.get("/auth/google/callback",
             res.cookie("access_token", accessToken)
             // return res.send({ status: true, data: isUser })
             // res.sendFile(__dirname + "/dashboard.html")
-            res.redirect(`http://127.0.0.1:5500/lobby.html?token=${accessToken}`)
+            res.redirect(`http://127.0.0.1:5500/index.html?token=${accessToken}`)
         }
         else {
             let User = { email, name, password: uuidv4() }
@@ -83,7 +83,7 @@ app.get("/auth/google/callback",
             console.log(result)
             mailer(OTP, email)
             res.cookie("access_token", accessToken)
-            res.redirect(`http://127.0.0.1:5500/lobby.html?token=${accessToken}`)
+            res.redirect(`http://127.0.0.1:5500/index.html?token=${accessToken}`)
             // res.sendFile(__dirname + "/dashboard.html")
         }
     }
